@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LifeQuest — Temukan Tujuan Hidupmu</title>
+<meta name="description" content="Assessment RIASEC, Mission Builder, dan Career Explorer untuk siswa Indonesia."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f0f4f8;--bg-card:#ffffff;--bg-card2:#f8fafc;
+  --text:#0a0e1a;--muted:#64748b;--subtle:#94a3b8;--border:#e2e8f0;
+  --primary:#006a65;--primary-h:#005652;--glow:rgba(0,106,101,.12);
+  --accent:#d4a847;--teal:#77f3eb;--nav:rgba(240,244,248,.92);
+  --sh:0 4px 20px rgba(0,0,0,.07);--tr:.25s cubic-bezier(.4,0,.2,1);--r:14px;
+}
+[data-theme="dark"]{
+  --bg:#070c18;--bg-card:#0f1629;--bg-card2:#141d35;
+  --text:#e8edf5;--muted:#8fa3c0;--subtle:#3d5068;--border:#1a2540;
+  --primary:#006a65;--primary-h:#008f89;--glow:rgba(119,243,235,.07);
+  --nav:rgba(7,12,24,.92);--sh:0 4px 20px rgba(0,0,0,.3);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Figtree',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background var(--tr),color var(--tr)}
+
+#topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav);backdrop-filter:blur(12px);display:flex;align-items:center;gap:10px;padding:0 20px;height:56px;border-bottom:1px solid var(--border)}
+.logo-link{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}
+.logo-mark{width:28px;height:28px;background:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.logo-txt{font-weight:900;font-size:.95rem;color:var(--text)}
+#prog-wrap{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;max-width:260px;margin:0 8px}
+#prog-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--teal));border-radius:2px;transition:width .5s ease;width:0}
+#step-lbl{font-size:.72rem;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.spacer{flex:1}
+.btn-icon{width:34px;height:34px;border-radius:7px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--tr)}
+.btn-icon:hover{border-color:var(--primary);color:var(--primary)}
+
+main{padding-top:56px;min-height:100vh}
+.screen{display:none;min-height:calc(100vh - 56px);align-items:flex-start;justify-content:center;padding:40px 16px 60px}
+.screen.active{display:flex}
+.inner{width:100%;max-width:640px;margin:0 auto}
+
+.badge{display:inline-block;padding:4px 13px;border-radius:20px;background:var(--glow);border:1px solid rgba(0,106,101,.2);color:var(--primary);font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
+[data-theme="dark"] .badge{color:var(--teal);border-color:rgba(119,243,235,.18)}
+
+.w-h{font-size:clamp(1.9rem,5vw,2.9rem);font-weight:900;line-height:1.15;margin-bottom:12px}
+.w-h em{color:var(--primary);font-style:normal}
+[data-theme="dark"] .w-h em{color:var(--teal)}
+.w-sub{color:var(--muted);font-size:.95rem;line-height:1.7;margin-bottom:28px}
+
+.pillars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px}
+.pillar{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;align-items:flex-start;gap:10px}
+.pillar-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+.pillar-t{font-size:.82rem;font-weight:700;margin-bottom:2px}
+.pillar-d{font-size:.75rem;color:var(--muted);line-height:1.4}
+
+.form-row{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+input,select{width:100%;padding:13px 15px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text);font-family:inherit;font-size:.9rem;outline:none;transition:var(--tr);appearance:none;-webkit-appearance:none}
+input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--glow)}
+.btn-p{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 26px;border-radius:9px;border:none;background:var(--primary);color:#fff;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;transition:var(--tr);width:100%}
+.btn-p:hover{background:var(--primary-h);transform:translateY(-1px)}
+.btn-s{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 22px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;transition:var(--tr)}
+.btn-s:hover{border-color:var(--primary);color:var(--primary)}
+.note{font-size:.77rem;color:var(--subtle);text-align:center;margin-top:14px}
+
+.assess-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.dim-badge{padding:5px 13px;border-radius:6px;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.dim-R{background:rgba(239,68,68,.12);color:#ef4444}
+.dim-I{background:rgba(59,130,246,.12);color:#3b82f6}
+.dim-A{background:rgba(168,85,247,.12);color:#a855f7}
+.dim-S{background:rgba(34,197,94,.12);color:#22c55e}
+.dim-E{background:rgba(245,158,11,.12);color:#f59e0b}
+.dim-C{background:rgba(99,102,241,.12);color:#6366f1}
+.q-count{font-size:.82rem;color:var(--muted)}
+.dim-info{font-size:.79rem;color:var(--subtle);margin-bottom:14px;padding:10px 13px;background:var(--bg-card2);border-radius:8px;border-left:3px solid var(--border);line-height:1.5}
+.q-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:10px;transition:border-color var(--tr)}
+.q-card.answered{border-color:var(--primary)}
+.q-num{font-size:.7rem;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+.q-text{font-size:.91rem;font-weight:500;line-height:1.55;margin-bottom:14px}
+.likert{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.lk{padding:9px 4px;border-radius:7px;border:1.5px solid var(--border);background:var(--bg-card2);color:var(--muted);font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;transition:var(--tr);text-align:center}
+.lk:hover{border-color:var(--primary);color:var(--primary)}
+.lk.sel{background:var(--primary);border-color:var(--primary);color:#fff}
+.lk-labels{display:flex;justify-content:space-between;margin-top:6px}
+.lk-labels span{font-size:.67rem;color:var(--subtle)}
+.assess-nav{display:flex;gap:10px;margin-top:24px}
+.assess-nav .btn-p{flex:2}
+.assess-nav .btn-s{flex:1}
+
+.mission-sec{margin-bottom:22px}
+.mlabel{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg-card);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;transition:var(--tr)}
+.chip:hover{border-color:var(--primary);color:var(--primary)}
+.chip.sel{background:var(--primary);border-color:var(--primary);color:#fff}
+.mission-preview{background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:20px;font-size:.85rem;color:var(--muted);line-height:1.65;min-height:52px;transition:var(--tr)}
+.mission-preview strong{color:var(--text)}
+
+.career-header{margin-bottom:18px}
+.career-h{font-size:1.4rem;font-weight:900;margin-bottom:4px}
+.career-sub{color:var(--muted);font-size:.82rem;line-height:1.5}
+.career-filter{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.filter-btn{padding:5px 12px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:var(--tr)}
+.filter-btn.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.career-grid{display:flex;flex-direction:column;gap:11px}
+.career-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--r);padding:17px;display:flex;gap:13px;align-items:flex-start;transition:var(--tr);cursor:pointer}
+.career-card:hover{border-color:var(--primary);box-shadow:var(--sh)}
+.career-card.sel{border-color:var(--primary);background:var(--glow)}
+.c-icon{width:42px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;background:var(--bg-card2)}
+.c-body{flex:1;min-width:0}
+.c-name{font-size:.94rem;font-weight:700;margin-bottom:3px}
+.c-desc{font-size:.78rem;color:var(--muted);line-height:1.5;margin-bottom:8px}
+.c-evo{font-size:.71rem;color:var(--subtle);margin-bottom:9px;font-style:italic}
+.c-scores{display:flex;gap:5px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:10px;font-size:.69rem;font-weight:700}
+.pill-match{background:rgba(0,106,101,.1);color:var(--primary)}
+[data-theme="dark"] .pill-match{color:var(--teal)}
+.pill-grow{background:rgba(34,197,94,.1);color:#22c55e}
+.pill-ai{background:rgba(239,68,68,.1);color:#ef4444}
+.pill-hum{background:rgba(59,130,246,.1);color:#3b82f6}
+.pill-imp{background:rgba(168,85,247,.1);color:#a855f7}
+.sel-hint{font-size:.74rem;color:var(--subtle);text-align:center;margin:10px 0 0}
+
+.arch-card{background:linear-gradient(135deg,var(--bg-card) 0%,var(--bg-card2) 100%);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:22px;text-align:center}
+.arch-icon{font-size:3.2rem;display:block;margin-bottom:10px}
+.arch-en{font-size:.78rem;font-weight:700;color:var(--primary);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+[data-theme="dark"] .arch-en{color:var(--teal)}
+.arch-id{font-size:1.75rem;font-weight:900;margin-bottom:10px}
+.arch-desc{color:var(--muted);font-size:.87rem;line-height:1.7}
+.radar{display:flex;gap:6px;justify-content:center;margin-top:20px;padding:0 4px}
+.rbar{flex:1;text-align:center}
+.rbar-lbl{font-size:.67rem;color:var(--subtle);margin-bottom:4px;font-weight:700}
+.rbar-track{height:72px;background:var(--border);border-radius:4px;position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.rbar-fill{width:100%;border-radius:3px;transition:height .7s ease}
+.rbar-val{font-size:.67rem;font-weight:700;color:var(--text);margin-top:3px}
+.res-sec{margin-bottom:22px}
+.res-sec-title{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--subtle);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.skill-tags{display:flex;flex-wrap:wrap;gap:7px}
+.skill-tag{padding:6px 12px;border-radius:6px;background:var(--bg-card2);border:1px solid var(--border);font-size:.78rem;color:var(--muted);font-weight:500}
+.mission-box{background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:10px;padding:16px;font-size:.88rem;color:var(--text);line-height:1.7}
+.share-row{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.share-row .btn-p{flex:2}
+.share-row .btn-s{flex:1}
+
+.fu{opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease}
+.fu.vis{opacity:1;transform:none}
+
+@media(min-width:580px){.form-row{flex-direction:row}.pillars{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.pillars{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav id="topbar">
+  <a href="/" class="logo-link">
+    <div class="logo-mark"><svg viewBox="0 0 14 14"><path d="M7 1 L13 7 L7 13 L1 7 Z"/></svg></div>
+    <span class="logo-txt">LifeQuest</span>
+  </a>
+  <div id="prog-wrap"><div id="prog-fill"></div></div>
+  <span id="step-lbl"></span>
+  <div class="spacer"></div>
+  <button class="btn-icon" onclick="toggleTheme()" title="Ganti tema">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7.5" cy="7.5" r="3.5"/><path d="M7.5 1v1M7.5 13v1M1 7.5h1M13 7.5h1M3.1 3.1l.7.7M11.2 11.2l.7.7M11.2 3.1l-.7.7M3.1 11.2l.7-.7"/></svg>
+  </button>
+</nav>
+
+<main>
+
+<!-- S0: WELCOME -->
+<section id="s0" class="screen active">
+  <div class="inner">
+    <div class="badge fu">Self-Discovery Platform</div>
+    <h1 class="w-h fu" style="transition-delay:.06s">Temukan <em>Tujuan Hidupmu.</em><br>Bangun Masa Depanmu.</h1>
+    <p class="w-sub fu" style="transition-delay:.12s">Jawab 36 pertanyaan RIASEC, pilih misi hidupmu, dan eksplorasi 30+ karier masa depan — lengkap dengan skor AI Risk, pertumbuhan, dan dampak sosial.</p>
+
+    <div class="pillars fu" style="transition-delay:.16s">
+      <div class="pillar"><div class="pillar-icon">🧬</div><div><div class="pillar-t">RIASEC Assessment</div><div class="pillar-d">6 dimensi minat &amp; bakat ilmiah</div></div></div>
+      <div class="pillar"><div class="pillar-icon">🎯</div><div><div class="pillar-t">Mission Builder</div><div class="pillar-d">Target + Problem + Approach = Misimu</div></div></div>
+      <div class="pillar"><div class="pillar-icon">🚀</div><div><div class="pillar-t">Career Universe</div><div class="pillar-d">30+ karier + AI Risk &amp; Growth score</div></div></div>
+      <div class="pillar"><div class="pillar-icon">🗺️</div><div><div class="pillar-t">Skill Roadmap</div><div class="pillar-d">Skill gap &amp; jalur karier kamu</div></div></div>
+    </div>
+
+    <div class="form-row fu" style="transition-delay:.2s">
+      <input id="inp-name" type="text" placeholder="Nama kamu" autocomplete="given-name"/>
+      <select id="inp-grade">
+        <option value="">Kelas / Status</option>
+        <option value="sma10">SMA/SMK Kelas 10</option>
+        <option value="sma11">SMA/SMK Kelas 11</option>
+        <option value="sma12">SMA/SMK Kelas 12</option>
+        <option value="gap">Gap Year</option>
+        <option value="mhs">Mahasiswa</option>
+        <option value="fresh">Fresh Graduate</option>
+        <option value="prof">Profesional</option>
+      </select>
+    </div>
+
+    <button class="btn-p fu" style="transition-delay:.24s" onclick="goAssess()">
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5h10M9 4l4.5 4.5L9 13"/></svg>
+      Mulai Assessment RIASEC
+    </button>
+    <p class="note fu" style="transition-delay:.28s">&#177; 8 menit &nbsp;&middot;&nbsp; Gratis &nbsp;&middot;&nbsp; Tanpa login &nbsp;&middot;&nbsp; Data tersimpan di browser</p>
+  </div>
+</section>
+
+<!-- S1: ASSESSMENT -->
+<section id="s1" class="screen">
+  <div class="inner">
+    <div class="assess-top">
+      <span id="dim-badge" class="dim-badge">Realistis</span>
+      <span id="q-count" class="q-count">1&#8211;6 dari 36</span>
+    </div>
+    <div id="dim-info" class="dim-info"></div>
+    <div id="q-list"></div>
+    <div class="assess-nav">
+      <button class="btn-s" id="btn-prev" onclick="assessPrev()" style="display:none">&#8592; Sebelumnya</button>
+      <button class="btn-p" id="btn-next" onclick="assessNext()">Selanjutnya &#8594;</button>
+    </div>
+  </div>
+</section>
+
+<!-- S2: MISSION BUILDER -->
+<section id="s2" class="screen">
+  <div class="inner">
+    <div class="badge">Mission Builder</div>
+    <h2 style="font-size:1.55rem;font-weight:900;margin-bottom:8px">Siapa yang ingin kamu bantu?</h2>
+    <p style="color:var(--muted);font-size:.87rem;line-height:1.65;margin-bottom:24px">Pilih satu dari masing-masing kategori untuk membangun pernyataan misi hidupmu.</p>
+
+    <div class="mission-sec">
+      <div class="mlabel">Target &#8212; Kelompok yang ingin kamu bantu</div>
+      <div class="chips" id="c-target"></div>
+    </div>
+    <div class="mission-sec">
+      <div class="mlabel">Problem &#8212; Masalah yang ingin kamu selesaikan</div>
+      <div class="chips" id="c-problem"></div>
+    </div>
+    <div class="mission-sec">
+      <div class="mlabel">Approach &#8212; Cara kamu ingin berkontribusi</div>
+      <div class="chips" id="c-approach"></div>
+    </div>
+
+    <div id="mission-preview" class="mission-preview">Pilih kombinasi di atas untuk melihat pernyataan misi kamu...</div>
+
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn-s" onclick="goScreen(1)">&#8592; Kembali</button>
+      <button class="btn-p" onclick="goCareer()">Lihat Karier yang Cocok &#8594;</button>
+    </div>
+  </div>
+</section>
+
+<!-- S3: CAREER EXPLORER -->
+<section id="s3" class="screen">
+  <div class="inner">
+    <div class="career-header">
+      <div class="badge">Career Explorer</div>
+      <h2 class="career-h">Karier yang Cocok Untukmu</h2>
+      <p class="career-sub" id="career-sub">Berdasarkan profil RIASEC dan misi kamu</p>
+    </div>
+    <div class="career-filter">
+      <button class="filter-btn on" onclick="filterCareer('all',this)">Semua</button>
+      <button class="filter-btn" onclick="filterCareer('health',this)">Kesehatan</button>
+      <button class="filter-btn" onclick="filterCareer('tech',this)">Teknologi</button>
+      <button class="filter-btn" onclick="filterCareer('social',this)">Sosial</button>
+      <button class="filter-btn" onclick="filterCareer('creative',this)">Kreatif</button>
+      <button class="filter-btn" onclick="filterCareer('biz',this)">Bisnis</button>
+    </div>
+    <div id="career-grid" class="career-grid"></div>
+    <p class="sel-hint" id="sel-hint">Ketuk kartu untuk memilih karier yang menarik untukmu</p>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn-s" onclick="goScreen(2)">&#8592; Ubah Misi</button>
+      <button class="btn-p" onclick="goResults()">Lihat Hasil Lengkap &#8594;</button>
+    </div>
+  </div>
+</section>
+
+<!-- S4: RESULTS -->
+<section id="s4" class="screen">
+  <div class="inner">
+    <div class="badge">Hasil Assessment Kamu</div>
+    <div class="arch-card">
+      <span id="r-icon" class="arch-icon">&#129517;</span>
+      <div id="r-en" class="arch-en">The Explorer</div>
+      <div id="r-id" class="arch-id">Sang Penjelajah</div>
+      <p id="r-desc" class="arch-desc"></p>
+      <div class="radar" id="r-radar"></div>
+    </div>
+
+    <div class="res-sec">
+      <div class="res-sec-title">Top 5 Karier untukmu</div>
+      <div id="r-careers" class="career-grid"></div>
+    </div>
+
+    <div class="res-sec">
+      <div class="res-sec-title">Skill yang perlu kamu bangun</div>
+      <div id="r-skills" class="skill-tags"></div>
+    </div>
+
+    <div class="res-sec">
+      <div class="res-sec-title">Pernyataan Misi Hidupmu</div>
+      <div id="r-mission" class="mission-box"></div>
+    </div>
+
+    <div class="share-row">
+      <button class="btn-p" onclick="copyResults()">Salin Hasil</button>
+      <button class="btn-s" onclick="goScreen(3)">&#8592; Eksplorasi</button>
+      <button class="btn-s" onclick="restartApp()">Ulang</button>
+    </div>
+    <p class="note" style="margin-top:14px">Tunjukkan hasil ini ke guru BK atau orang tuamu</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+const DIMS_ORDER=['R','I','A','S','E','C'];
+const DIM_DATA={
+  R:{label:'Realistis',info:'Minat pada pekerjaan praktis, teknis, fisik — merakit, membangun, memperbaiki, bekerja dengan mesin atau alam.',color:'#ef4444'},
+  I:{label:'Investigatif',info:'Minat pada riset, analisis, dan pemecahan masalah ilmiah — berpikir kritis, bereksperimen, mencari pola.',color:'#3b82f6'},
+  A:{label:'Artistik',info:'Minat pada kreasi, ekspresi diri, dan inovasi bebas — seni, musik, desain, tulisan, storytelling.',color:'#a855f7'},
+  S:{label:'Sosial',info:'Minat pada interaksi manusia — membantu, mengajar, merawat, berkolaborasi, membimbing orang lain.',color:'#22c55e'},
+  E:{label:'Wirausaha',info:'Minat pada kepemimpinan, persuasi, dan bisnis — memimpin tim, membangun usaha, mengambil risiko terukur.',color:'#f59e0b'},
+  C:{label:'Konvensional',info:'Minat pada keteraturan, sistem, dan data — mengelola informasi, mengikuti prosedur, bekerja teliti dan terstruktur.',color:'#6366f1'},
+};
+
+const QUESTIONS=[
+  {n:1,d:'R',t:'Saya suka memperbaiki, membongkar, atau merakit benda-benda.'},
+  {n:2,d:'R',t:'Saya senang bekerja dengan peralatan, mesin, atau teknologi fisik.'},
+  {n:3,d:'R',t:'Saya menikmati aktivitas fisik atau pekerjaan di luar ruangan.'},
+  {n:4,d:'R',t:'Saya lebih suka bekerja dengan benda nyata daripada ide abstrak.'},
+  {n:5,d:'R',t:'Saya tertarik dengan cara kerja mesin, kendaraan, atau elektronik.'},
+  {n:6,d:'R',t:'Saya puas ketika berhasil membuat atau membangun sesuatu secara langsung.'},
+  {n:7,d:'I',t:'Saya suka memecahkan masalah yang kompleks dan menantang.'},
+  {n:8,d:'I',t:'Saya senang membaca dan mempelajari hal-hal baru secara mendalam.'},
+  {n:9,d:'I',t:'Saya tertarik dengan sains, teknologi, dan cara alam semesta bekerja.'},
+  {n:10,d:'I',t:'Saya menikmati menganalisis data dan mencari pola tersembunyi.'},
+  {n:11,d:'I',t:'Saya suka melakukan penelitian, eksperimen, atau observasi.'},
+  {n:12,d:'I',t:'Saya lebih suka berpikir secara mendalam sebelum mengambil tindakan.'},
+  {n:13,d:'A',t:'Saya suka mengekspresikan diri melalui seni, musik, desain, atau tulisan.'},
+  {n:14,d:'A',t:'Saya menikmati kegiatan kreatif tanpa batasan aturan yang ketat.'},
+  {n:15,d:'A',t:'Saya memiliki imajinasi yang kuat dan sering punya ide-ide orisinal.'},
+  {n:16,d:'A',t:'Saya peduli dengan estetika, keindahan, dan bagaimana sesuatu terlihat atau terdengar.'},
+  {n:17,d:'A',t:'Saya senang dengan pertunjukan, film, teater, atau storytelling.'},
+  {n:18,d:'A',t:'Saya lebih suka pekerjaan yang memberi saya kebebasan berekspresi.'},
+  {n:19,d:'S',t:'Saya senang membantu orang lain mengatasi masalah atau tantangan mereka.'},
+  {n:20,d:'S',t:'Saya menikmati bekerja dalam tim dan berkolaborasi dengan orang lain.'},
+  {n:21,d:'S',t:'Saya peduli dengan kesejahteraan dan perasaan orang di sekitar saya.'},
+  {n:22,d:'S',t:'Saya senang mengajar, melatih, atau membimbing orang lain.'},
+  {n:23,d:'S',t:'Saya nyaman berbicara dan berinteraksi dengan berbagai jenis orang.'},
+  {n:24,d:'S',t:'Saya termotivasi ketika bisa membuat perbedaan nyata dalam kehidupan orang.'},
+  {n:25,d:'E',t:'Saya suka memimpin, mengorganisir, dan menggerakkan orang menuju tujuan bersama.'},
+  {n:26,d:'E',t:'Saya tertarik dengan bisnis, keuangan, investasi, atau kewirausahaan.'},
+  {n:27,d:'E',t:'Saya senang meyakinkan orang dan mempresentasikan ide-ide saya.'},
+  {n:28,d:'E',t:'Saya menikmati kompetisi dan termotivasi untuk menjadi yang terbaik.'},
+  {n:29,d:'E',t:'Saya punya ambisi besar dan ingin diakui atas pencapaian saya.'},
+  {n:30,d:'E',t:'Saya nyaman mengambil risiko terukur untuk mencapai tujuan yang lebih besar.'},
+  {n:31,d:'C',t:'Saya suka pekerjaan yang terstruktur, terorganisir, dan memiliki prosedur yang jelas.'},
+  {n:32,d:'C',t:'Saya menikmati mengelola data, dokumen, atau sistem informasi.'},
+  {n:33,d:'C',t:'Saya sangat teliti dan memperhatikan detail serta akurasi dalam pekerjaan.'},
+  {n:34,d:'C',t:'Saya nyaman bekerja dalam lingkungan yang stabil dan dapat diprediksi.'},
+  {n:35,d:'C',t:'Saya suka bekerja dengan angka, statistik, dan laporan.'},
+  {n:36,d:'C',t:'Saya merasa puas ketika semua hal tertata rapi dan sesuai rencana.'},
+];
+
+const MISSION_DATA={
+  target:[
+    {k:'anak',l:'Anak-anak'},{k:'remaja',l:'Remaja'},{k:'pasien',l:'Pasien & Lansia'},
+    {k:'petani',l:'Petani & Nelayan'},{k:'umkm',l:'UMKM & Wirausaha'},{k:'pelajar',l:'Pelajar & Mahasiswa'},
+    {k:'ling',l:'Lingkungan & Alam'},{k:'gov',l:'Pemerintah & Publik'},
+  ],
+  problem:[
+    {k:'kesehatan',l:'Akses Kesehatan'},{k:'edukasi',l:'Kualitas Pendidikan'},
+    {k:'ekonomi',l:'Ketimpangan Ekonomi'},{k:'teknologi',l:'Literasi Teknologi'},
+    {k:'lingkungan',l:'Kerusakan Lingkungan'},{k:'mental',l:'Kesehatan Mental'},
+    {k:'gizi',l:'Gizi & Ketahanan Pangan'},{k:'hukum',l:'Akses Keadilan'},
+  ],
+  approach:[
+    {k:'human',l:'Human Path',d:'Praktisi langsung'},
+    {k:'builder',l:'Builder Path',d:'Engineer & pengembang'},
+    {k:'research',l:'Research Path',d:'Peneliti & ilmuwan'},
+    {k:'business',l:'Business Path',d:'Entrepreneur'},
+    {k:'policy',l:'Policy Path',d:'Advokat & pembuat kebijakan'},
+    {k:'creative',l:'Creative Path',d:'Kreator & seniman'},
+  ],
+};
+
+const CAREERS=[
+  {id:'dokter',cat:'health',icon:'🩺',name:'Dokter Umum',riasec:['S','I','R'],targets:['pasien','anak','remaja'],problems:['kesehatan','gizi','mental'],approaches:['human'],ai_risk:22,growth:75,human:92,impact:90,desc:'Memberikan layanan kesehatan primer, mendiagnosis penyakit, dan merujuk pasien ke spesialis.',skills:['Klinis','Komunikasi Empatik','Diagnosis','Evidence-Based Medicine'],evo:'Dokter Umum → Spesialis → Clinical AI Specialist → HealthTech Founder'},
+  {id:'dokter-sp',cat:'health',icon:'🔬',name:'Dokter Spesialis',riasec:['I','S','R'],targets:['pasien','anak'],problems:['kesehatan'],approaches:['human','research'],ai_risk:18,growth:80,human:94,impact:92,desc:'Mendalami satu bidang medis (bedah, anak, THT, dll.) untuk penanganan kasus kompleks.',skills:['Keahlian Klinis','Riset Medis','Critical Thinking','Teknik Prosedur'],evo:'Spesialis → Konsultan → Academic Clinician → HealthTech Advisor'},
+  {id:'perawat',cat:'health',icon:'💉',name:'Perawat / Bidan',riasec:['S','R','I'],targets:['pasien','anak','remaja'],problems:['kesehatan','mental','gizi'],approaches:['human'],ai_risk:18,growth:78,human:95,impact:92,desc:'Memberikan perawatan langsung kepada pasien dan mendukung proses penyembuhan holistik.',skills:['Keperawatan','Empati','Critical Care','Komunikasi'],evo:'Perawat → Perawat Senior → Ners Spesialis → Manajer Keperawatan'},
+  {id:'apoteker',cat:'health',icon:'💊',name:'Apoteker',riasec:['I','S','C'],targets:['pasien','anak'],problems:['kesehatan','gizi'],approaches:['human'],ai_risk:30,growth:72,human:82,impact:85,desc:'Memastikan penggunaan obat yang tepat, aman, dan efektif untuk pasien dan komunitas.',skills:['Farmakologi','Ketelitian','Manajemen Obat','Konseling Pasien'],evo:'Apoteker → Apoteker Klinis → Manajer Farmasi → Konsultan Farmasi'},
+  {id:'ahli-gizi',cat:'health',icon:'🥗',name:'Ahli Gizi / Dietisien',riasec:['S','I','R'],targets:['anak','pasien','petani'],problems:['gizi','kesehatan'],approaches:['human','research'],ai_risk:25,growth:78,human:88,impact:88,desc:'Merancang program nutrisi berbasis bukti untuk mencegah dan mengobati kondisi kesehatan.',skills:['Ilmu Gizi','Konseling','Epidemiologi Gizi','Kreativitas Menu'],evo:'Ahli Gizi → Clinical Dietitian → Nutrition Researcher → Konsultan Gizi AI'},
+  {id:'psikolog',cat:'health',icon:'🧠',name:'Psikolog Klinis',riasec:['S','I','A'],targets:['remaja','anak','pelajar'],problems:['mental','edukasi'],approaches:['human','research'],ai_risk:14,growth:85,human:96,impact:88,desc:'Memberikan asesmen psikologis dan terapi untuk mendukung kesehatan mental individu.',skills:['Empati','Active Listening','Asesmen Psikologi','Terapi Kognitif'],evo:'Psikolog → Psikolog Klinis → Supervisor → Konsultan Korporat'},
+  {id:'biomedis',cat:'health',icon:'⚕️',name:'Biomedical Engineer',riasec:['I','R','S'],targets:['pasien','anak'],problems:['kesehatan'],approaches:['builder','research'],ai_risk:28,growth:88,human:75,impact:90,desc:'Mengembangkan perangkat medis, prostetik, dan teknologi diagnostik untuk meningkatkan layanan kesehatan.',skills:['Biology','Engineering','Programming','Clinical Knowledge'],evo:'Biomedical Engineer → Senior Engineer → R&D Lead → MedTech Entrepreneur'},
+  {id:'drh',cat:'health',icon:'🐾',name:'Dokter Hewan / Veteriner',riasec:['R','S','I'],targets:['ling','petani'],problems:['kesehatan','lingkungan','gizi'],approaches:['human'],ai_risk:20,growth:72,human:90,impact:82,desc:'Merawat kesehatan hewan, mencegah zoonosis, dan mendukung ketahanan pangan dan lingkungan.',skills:['Klinis Hewan','Bedah','Epidemiologi','Public Health'],evo:'Veteriner → Spesialis → Peneliti Zoonosis → WHO/FAO Advisor'},
+  {id:'software-eng',cat:'tech',icon:'💻',name:'Software Engineer',riasec:['I','R','C'],targets:['umkm','pelajar','gov'],problems:['teknologi','edukasi','ekonomi'],approaches:['builder'],ai_risk:38,growth:88,human:68,impact:80,desc:'Membangun perangkat lunak, aplikasi, dan sistem digital yang mengubah cara dunia bekerja.',skills:['Programming','System Design','Problem Solving','Collaboration'],evo:'Junior Dev → Senior Engineer → Tech Lead → CTO / Founder'},
+  {id:'ai-eng',cat:'tech',icon:'🤖',name:'AI / ML Engineer',riasec:['I','R','C'],targets:['gov','umkm','pasien'],problems:['teknologi','kesehatan','ekonomi'],approaches:['builder','research'],ai_risk:25,growth:95,human:65,impact:85,desc:'Membangun dan melatih model AI/machine learning untuk solusi nyata di berbagai industri.',skills:['Machine Learning','Deep Learning','Python','Matematika & Statistik'],evo:'ML Engineer → Senior ML → Research Scientist → AI Lead / Researcher'},
+  {id:'data-sci',cat:'tech',icon:'📊',name:'Data Scientist',riasec:['I','C','R'],targets:['gov','umkm'],problems:['ekonomi','kesehatan','lingkungan'],approaches:['research','builder'],ai_risk:32,growth:90,human:70,impact:82,desc:'Menganalisis data besar untuk menemukan insight dan membangun model prediktif berbasis AI/ML.',skills:['Statistik','Machine Learning','Python/R','Data Visualization'],evo:'Data Analyst → Data Scientist → ML Engineer → Head of AI'},
+  {id:'cybersec',cat:'tech',icon:'🛡️',name:'Cybersecurity Specialist',riasec:['I','R','C'],targets:['gov','umkm'],problems:['teknologi','hukum'],approaches:['builder','research'],ai_risk:30,growth:92,human:72,impact:80,desc:'Melindungi sistem dan data dari ancaman siber, membangun keamanan digital organisasi.',skills:['Network Security','Ethical Hacking','Cryptography','Risk Analysis'],evo:'Security Analyst → Pentester → Security Architect → CISO'},
+  {id:'ux',cat:'tech',icon:'🎨',name:'UX/UI Designer',riasec:['A','I','R'],targets:['pelajar','umkm','remaja'],problems:['teknologi','edukasi'],approaches:['builder','creative'],ai_risk:28,growth:82,human:85,impact:75,desc:'Merancang pengalaman dan antarmuka digital yang intuitif, inklusif, dan estetis.',skills:['Design Thinking','Prototyping','User Research','Figma'],evo:'Junior Designer → Product Designer → Design Lead → Chief Design Officer'},
+  {id:'agri',cat:'tech',icon:'🌾',name:'AgroTech Engineer',riasec:['R','I','S'],targets:['petani','ling'],problems:['gizi','lingkungan','ekonomi'],approaches:['builder','research'],ai_risk:30,growth:80,human:78,impact:88,desc:'Mengembangkan teknologi pertanian cerdas untuk meningkatkan produktivitas dan keberlanjutan.',skills:['Agronomi','IoT/Sensor','Data Analysis','Soil Science'],evo:'Agri Engineer → Senior Researcher → AgroTech Founder → Policy Advisor'},
+  {id:'peneliti',cat:'tech',icon:'🔭',name:'Peneliti / Scientist',riasec:['I','R','C'],targets:['gov','ling','pelajar'],problems:['lingkungan','kesehatan','edukasi'],approaches:['research'],ai_risk:25,growth:80,human:78,impact:82,desc:'Melakukan riset ilmiah untuk mengembangkan pengetahuan baru dan solusi atas masalah nyata.',skills:['Scientific Method','Data Analysis','Technical Writing','Critical Thinking'],evo:'Peneliti Junior → Senior Researcher → Principal Investigator → Profesor'},
+  {id:'social',cat:'social',icon:'🤝',name:'Pekerja Sosial',riasec:['S','E','A'],targets:['anak','remaja','petani'],problems:['ekonomi','mental','hukum'],approaches:['human','policy'],ai_risk:12,growth:70,human:97,impact:90,desc:'Mendukung individu dan komunitas rentan untuk mengakses layanan sosial dan meningkatkan kesejahteraan.',skills:['Empati','Advokasi','Case Management','Psikologi Sosial'],evo:'Social Worker → Supervisor → Program Director → Kebijakan Sosial'},
+  {id:'guru',cat:'social',icon:'📚',name:'Guru / Pendidik',riasec:['S','A','E'],targets:['anak','remaja','pelajar'],problems:['edukasi','mental'],approaches:['human','creative'],ai_risk:20,growth:70,human:95,impact:92,desc:'Mentransfer ilmu, membangun karakter, dan menginspirasi generasi berikutnya di kelas.',skills:['Pedagogi','Komunikasi','Kreativitas','Empati'],evo:'Guru → Koordinator → Kepala Sekolah → Konsultan Pendidikan'},
+  {id:'kesmas',cat:'social',icon:'🏥',name:'Tenaga Kesehatan Masyarakat',riasec:['S','I','E'],targets:['gov','pasien','anak'],problems:['kesehatan','gizi','mental'],approaches:['policy','research'],ai_risk:28,growth:80,human:85,impact:90,desc:'Merancang program kesehatan komunitas, surveilans epidemiologi, dan kebijakan kesehatan publik.',skills:['Epidemiologi','Biostatistik','Program Management','Komunikasi Publik'],evo:'Health Officer → Epidemiologist → Program Director → WHO/Kemenkes'},
+  {id:'env',cat:'social',icon:'🌿',name:'Ilmuwan Lingkungan',riasec:['I','R','S'],targets:['ling','gov','petani'],problems:['lingkungan','kesehatan'],approaches:['research','policy'],ai_risk:22,growth:82,human:78,impact:88,desc:'Mempelajari ekosistem, perubahan iklim, dan polusi untuk mengembangkan solusi lingkungan.',skills:['Environmental Science','Field Research','GIS','Policy Analysis'],evo:'Environmental Analyst → Scientist → Konsultan → Policy Advisor'},
+  {id:'diplomat',cat:'social',icon:'🌐',name:'Diplomat / HI',riasec:['E','S','I'],targets:['gov','ling'],problems:['hukum','ekonomi','lingkungan'],approaches:['policy'],ai_risk:18,growth:68,human:88,impact:85,desc:'Mewakili negara dalam forum internasional, negosiasi perjanjian, dan membangun kerja sama global.',skills:['Diplomasi','Negosiasi','Bahasa Asing','Geopolitik'],evo:'Staff Diplomatik → Diplomat Junior → Konsulat → Duta Besar'},
+  {id:'content',cat:'creative',icon:'🎬',name:'Content Creator',riasec:['A','E','S'],targets:['remaja','pelajar','umkm'],problems:['edukasi','teknologi'],approaches:['creative','business'],ai_risk:42,growth:85,human:78,impact:72,desc:'Memproduksi konten video, podcast, atau media sosial yang menghibur, mendidik, atau menginspirasi.',skills:['Storytelling','Video Editing','Social Media','Branding'],evo:'Kreator → KOL → Brand Strategist → Media Entrepreneur'},
+  {id:'animator',cat:'creative',icon:'🎭',name:'Animator / Motion Designer',riasec:['A','R','I'],targets:['anak','pelajar','remaja'],problems:['edukasi','teknologi'],approaches:['creative'],ai_risk:45,growth:80,human:75,impact:72,desc:'Menciptakan animasi 2D/3D, motion graphic, dan visual interaktif untuk hiburan dan edukasi.',skills:['Animation','Illustration','Storytelling','Maya/Blender'],evo:'Animator → Senior Animator → Art Director → Studio Founder'},
+  {id:'arsitek',cat:'creative',icon:'🏛️',name:'Arsitek',riasec:['A','I','R'],targets:['gov','umkm','ling'],problems:['lingkungan','ekonomi'],approaches:['builder','creative'],ai_risk:35,growth:75,human:80,impact:78,desc:'Merancang bangunan dan ruang hidup yang fungsional, estetis, dan berkelanjutan.',skills:['Desain Arsitektur','AutoCAD/BIM','Structural Knowledge','Project Management'],evo:'Arsitek Junior → Arsitek Senior → Principal → Pendiri Firma'},
+  {id:'game',cat:'creative',icon:'🎮',name:'Game Developer',riasec:['A','R','I'],targets:['anak','remaja','pelajar'],problems:['edukasi','mental'],approaches:['builder','creative'],ai_risk:35,growth:85,human:75,impact:72,desc:'Merancang dan membangun permainan digital yang menghibur, mendidik, atau melatih keterampilan.',skills:['Game Design','Unity/Unreal','Programming','Storytelling'],evo:'Game Dev → Senior Dev → Game Designer → Studio Founder'},
+  {id:'jurnalis',cat:'creative',icon:'📰',name:'Jurnalis Digital',riasec:['A','E','S'],targets:['remaja','pelajar','gov'],problems:['edukasi','hukum','teknologi'],approaches:['creative','policy'],ai_risk:50,growth:68,human:80,impact:82,desc:'Menginvestigasi, melaporkan, dan mendistribusikan berita penting melalui platform digital.',skills:['Investigative Reporting','Writing','Data Journalism','Social Media'],evo:'Reporter → Redaktur → Editor-in-Chief → Media Founder'},
+  {id:'entrepreneur',cat:'biz',icon:'🚀',name:'Entrepreneur / Founder',riasec:['E','I','A'],targets:['umkm','pelajar','gov'],problems:['ekonomi','teknologi'],approaches:['business'],ai_risk:30,growth:88,human:82,impact:85,desc:'Membangun dan mengembangkan bisnis inovatif yang menciptakan nilai bagi masyarakat dan pasar.',skills:['Leadership','Strategic Thinking','Sales','Product Development'],evo:'Founder → CEO → Serial Entrepreneur → Investor / Mentor'},
+  {id:'pm',cat:'biz',icon:'🗺️',name:'Product Manager',riasec:['E','I','S'],targets:['pelajar','umkm','remaja'],problems:['teknologi','edukasi'],approaches:['business','builder'],ai_risk:35,growth:88,human:80,impact:80,desc:'Memimpin pengembangan produk digital dari ideasi hingga peluncuran, berkolaborasi lintas tim.',skills:['Product Strategy','Roadmapping','Data Analysis','User Research'],evo:'Associate PM → Senior PM → Group PM → CPO / Founder'},
+  {id:'konsultan',cat:'biz',icon:'📈',name:'Konsultan Manajemen',riasec:['E','I','C'],targets:['umkm','gov'],problems:['ekonomi','teknologi'],approaches:['business','research'],ai_risk:40,growth:78,human:72,impact:75,desc:'Membantu organisasi menyelesaikan masalah bisnis kompleks dan mengoptimalkan kinerja.',skills:['Analytical Thinking','Presentasi','Project Management','Riset Bisnis'],evo:'Analyst → Consultant → Manager → Partner / Director'},
+  {id:'akuntan',cat:'biz',icon:'🧾',name:'Akuntan / Financial Analyst',riasec:['C','E','I'],targets:['umkm','gov'],problems:['ekonomi'],approaches:['business'],ai_risk:55,growth:65,human:60,impact:70,desc:'Mengelola laporan keuangan, audit, perencanaan pajak, dan analisis investasi organisasi.',skills:['Akuntansi','Financial Modeling','Excel','Audit'],evo:'Junior Accountant → Senior → Financial Controller → CFO'},
+  {id:'pengacara',cat:'biz',icon:'⚖️',name:'Pengacara / Legal Advisor',riasec:['E','S','I'],targets:['umkm','gov','remaja'],problems:['hukum','ekonomi'],approaches:['human','policy'],ai_risk:38,growth:72,human:82,impact:80,desc:'Mewakili klien dalam sengketa hukum, memberikan nasihat legal, dan merancang dokumen hukum.',skills:['Legal Research','Advocacy','Negosiasi','Analisis Kasus'],evo:'Associate Lawyer → Senior → Partner → Hakim / Profesor Hukum'},
+];
+
+const ARCHETYPES={
+  RI:{icon:'⚙️',en:'The Engineer',id:'Sang Inovator Teknis',desc:'Kamu pembangun analitis yang suka memahami cara kerja sistem dan menciptakan solusi teknis nyata. Duniamu adalah mesin, kode, dan eksperimen yang mengubah dunia.'},
+  IR:{icon:'⚙️',en:'The Engineer',id:'Sang Inovator Teknis',desc:'Kamu pembangun analitis yang suka memahami cara kerja sistem dan menciptakan solusi teknis nyata. Duniamu adalah mesin, kode, dan eksperimen yang mengubah dunia.'},
+  IA:{icon:'💡',en:'The Visionary Creator',id:'Sang Pencipta Visioner',desc:'Kamu memadukan pikiran analitis dengan jiwa kreatif. Kamu riset mendalam, lalu mengubah temuan itu menjadi karya orisinal yang bermakna dan menginspirasi.'},
+  AI:{icon:'💡',en:'The Visionary Creator',id:'Sang Pencipta Visioner',desc:'Kamu memadukan pikiran analitis dengan jiwa kreatif. Kamu riset mendalam, lalu mengubah temuan itu menjadi karya orisinal yang bermakna dan menginspirasi.'},
+  IS:{icon:'🩺',en:'The Healer Scholar',id:'Sang Penyembuh',desc:'Kamu punya rasa ingin tahu ilmiah yang mendalam sekaligus kepedulian tulus terhadap sesama. Karier di bidang kesehatan, pendidikan berbasis riset, atau ilmu sosial sangat cocok untukmu.'},
+  SI:{icon:'🩺',en:'The Healer Scholar',id:'Sang Penyembuh',desc:'Kamu punya rasa ingin tahu ilmiah yang mendalam sekaligus kepedulian tulus terhadap sesama. Karier di bidang kesehatan, pendidikan berbasis riset, atau ilmu sosial sangat cocok untukmu.'},
+  IE:{icon:'🚀',en:'The Visionary Founder',id:'Sang Pendiri Visioner',desc:'Kamu pemikir strategis yang berani. Kamu menganalisis masalah besar lalu memimpin solusinya. Startup tech, consulting, atau social enterprise adalah medan perjuanganmu.'},
+  EI:{icon:'🚀',en:'The Visionary Founder',id:'Sang Pendiri Visioner',desc:'Kamu pemikir strategis yang berani. Kamu menganalisis masalah besar lalu memimpin solusinya. Startup tech, consulting, atau social enterprise adalah medan perjuanganmu.'},
+  AS:{icon:'🌟',en:'The Creative Mentor',id:'Sang Pembimbing Kreatif',desc:'Kamu terinspirasi oleh orang-orang dan mengekspresikannya lewat kreasi. Kamu cocok sebagai guru kreatif, terapis seni, animator edukasi, atau perancang program sosial.'},
+  SA:{icon:'🌟',en:'The Creative Mentor',id:'Sang Pembimbing Kreatif',desc:'Kamu terinspirasi oleh orang-orang dan mengekspresikannya lewat kreasi. Kamu cocok sebagai guru kreatif, terapis seni, animator edukasi, atau perancang program sosial.'},
+  SE:{icon:'👑',en:'The Champion Leader',id:'Sang Pemimpin Berdampak',desc:'Kamu pemimpin yang benar-benar peduli. Kamu senang menggerakkan orang untuk mencapai tujuan mulia. Kebijakan publik, NGO, atau bisnis sosial menunggu kontribusimu.'},
+  ES:{icon:'👑',en:'The Champion Leader',id:'Sang Pemimpin Berdampak',desc:'Kamu pemimpin yang benar-benar peduli. Kamu senang menggerakkan orang untuk mencapai tujuan mulia. Kebijakan publik, NGO, atau bisnis sosial menunggu kontribusimu.'},
+  AE:{icon:'🎭',en:'The Bold Creator',id:'Sang Kreator Berani',desc:'Kamu kreatif sekaligus ambisius. Kamu tidak hanya berkarya — kamu ingin karya itu dikenal dan berdampak. Kreator digital, entrepreneur kreatif, atau brand builder adalah jalanmu.'},
+  EA:{icon:'🎭',en:'The Bold Creator',id:'Sang Kreator Berani',desc:'Kamu kreatif sekaligus ambisius. Kamu tidak hanya berkarya — kamu ingin karya itu dikenal dan berdampak. Kreator digital, entrepreneur kreatif, atau brand builder adalah jalanmu.'},
+  IC:{icon:'🔍',en:'The Precise Analyst',id:'Sang Analis',desc:'Kamu peneliti yang terstruktur — kamu menyukai data, presisi, dan sistem. Data science, keuangan, riset kebijakan, atau farmasi sangat cocok dengan cara berpikirmu.'},
+  CI:{icon:'🔍',en:'The Precise Analyst',id:'Sang Analis',desc:'Kamu peneliti yang terstruktur — kamu menyukai data, presisi, dan sistem. Data science, keuangan, riset kebijakan, atau farmasi sangat cocok dengan cara berpikirmu.'},
+  EC:{icon:'📊',en:'The Strategic Organizer',id:'Sang Pemimpin Sistematis',desc:'Kamu memimpin dengan terencana. Kamu suka membangun sistem, mengelola sumber daya, dan memastikan semua berjalan efisien. Manajemen, keuangan, dan administrasi adalah habitatmu.'},
+  CE:{icon:'📊',en:'The Strategic Organizer',id:'Sang Pemimpin Sistematis',desc:'Kamu memimpin dengan terencana. Kamu suka membangun sistem, mengelola sumber daya, dan memastikan semua berjalan efisien. Manajemen, keuangan, dan administrasi adalah habitatmu.'},
+  SR:{icon:'🤝',en:'The Hands-On Helper',id:'Sang Pelayan Nyata',desc:'Kamu ingin membuat perbedaan nyata dan kamu suka melakukannya langsung. Kesehatan, pertanian, keperawatan, atau layanan komunitas adalah panggilan jiwamu.'},
+  RS:{icon:'🤝',en:'The Hands-On Helper',id:'Sang Pelayan Nyata',desc:'Kamu ingin membuat perbedaan nyata dan kamu suka melakukannya langsung. Kesehatan, pertanian, keperawatan, atau layanan komunitas adalah panggilan jiwamu.'},
+  RA:{icon:'🔧',en:'The Creative Builder',id:'Sang Pembangun Kreatif',desc:'Kamu membangun sesuatu yang indah sekaligus fungsional. Kamu cocok sebagai arsitek, desainer produk, game developer, atau insinyur yang punya jiwa seni.'},
+  AR:{icon:'🔧',en:'The Creative Builder',id:'Sang Pembangun Kreatif',desc:'Kamu membangun sesuatu yang indah sekaligus fungsional. Kamu cocok sebagai arsitek, desainer produk, game developer, atau insinyur yang punya jiwa seni.'},
+  _:{icon:'🧭',en:'The Explorer',id:'Sang Penjelajah',desc:'Kamu jiwa yang serba bisa. Potensimu tersebar luas di banyak bidang — kekuatanmu adalah kemampuan adaptasi dan rasa ingin tahu yang tak pernah padam.'},
+};
+
+// STATE
+let state={name:'',grade:'',answers:{},mission:{target:'',problem:'',approach:''},scores:{R:0,I:0,A:0,S:0,E:0,C:0},topCareers:[],selectedIds:[],pg:0,apg:0,filter:'all'};
+function loadState(){try{const s=localStorage.getItem('lq_v2');if(s)state=JSON.parse(s);}catch(e){}state.selectedIds=state.selectedIds||[];}
+function saveState(){try{localStorage.setItem('lq_v2',JSON.stringify(state));}catch(e){}}
+
+// THEME
+let theme=localStorage.getItem('lq_theme')||'dark';
+document.documentElement.setAttribute('data-theme',theme);
+function toggleTheme(){theme=theme==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',theme);localStorage.setItem('lq_theme',theme);}
+
+// NAV
+const STEP_NAMES=['Selamat Datang','Assessment','Misi','Karier','Hasil'];
+function updateProgress(){const pct=(state.pg/4)*100;document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('step-lbl').textContent=STEP_NAMES[state.pg]||'';}
+function goScreen(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('s'+n).classList.add('active');state.pg=n;updateProgress();window.scrollTo({top:0,behavior:'smooth'});}
+
+// S0
+function goAssess(){
+  const nm=document.getElementById('inp-name').value.trim();
+  if(!nm){const el=document.getElementById('inp-name');el.style.borderColor='#ef4444';el.focus();setTimeout(()=>el.style.borderColor='',800);return;}
+  state.name=nm;state.grade=document.getElementById('inp-grade').value;state.apg=0;saveState();renderAssessPage();goScreen(1);
+}
+
+// S1
+function renderAssessPage(){
+  const pg=state.apg,dim=DIMS_ORDER[pg],dd=DIM_DATA[dim];
+  const qs=QUESTIONS.filter(q=>q.d===dim);
+  document.getElementById('dim-badge').textContent=dd.label;
+  document.getElementById('dim-badge').className='dim-badge dim-'+dim;
+  document.getElementById('q-count').textContent=(pg*6+1)+'–'+(pg*6+6)+' dari 36';
+  document.getElementById('dim-info').textContent=dd.info;
+  document.getElementById('btn-prev').style.display=pg>0?'':'none';
+  document.getElementById('btn-next').textContent=pg<5?'Selanjutnya →':'Assessment Selesai ✓';
+  document.getElementById('q-list').innerHTML=qs.map(q=>`
+    <div class="q-card${state.answers[q.n]?' answered':''}" id="qc-${q.n}">
+      <div class="q-num">Pertanyaan ${q.n}</div>
+      <div class="q-text">${q.t}</div>
+      <div class="likert">
+        ${[1,2,3,4,5].map(v=>`<button class="lk${state.answers[q.n]===v?' sel':''}" onclick="setAns(${q.n},${v},this)" title="${['Sangat Tidak Setuju','Tidak Setuju','Netral','Setuju','Sangat Setuju'][v-1]}">${v}</button>`).join('')}
+      </div>
+      <div class="lk-labels"><span>Sangat Tidak Setuju</span><span>Netral</span><span style="text-align:right">Sangat Setuju</span></div>
+    </div>
+  `).join('');
+}
+function setAns(qn,val,btn){
+  state.answers[qn]=val;
+  const card=document.getElementById('qc-'+qn);
+  card.classList.add('answered');
+  card.querySelectorAll('.lk').forEach((b,i)=>b.classList.toggle('sel',i+1===val));
+  saveState();
+}
+function assessPrev(){if(state.apg>0){state.apg--;renderAssessPage();window.scrollTo(0,0);}}
+function assessNext(){
+  const pg=state.apg,dim=DIMS_ORDER[pg];
+  const missing=QUESTIONS.filter(q=>q.d===dim&&!state.answers[q.n]);
+  if(missing.length){missing.forEach(q=>{const c=document.getElementById('qc-'+q.n);if(c){c.style.borderColor='#ef4444';setTimeout(()=>c.style.borderColor='',900);}});document.getElementById('qc-'+missing[0].n).scrollIntoView({behavior:'smooth',block:'center'});return;}
+  if(pg<5){state.apg++;renderAssessPage();window.scrollTo(0,0);}
+  else{computeScores();renderMission();goScreen(2);}
+}
+function computeScores(){
+  const raw={R:0,I:0,A:0,S:0,E:0,C:0};
+  QUESTIONS.forEach(q=>{raw[q.d]+=(state.answers[q.n]||3);});
+  DIMS_ORDER.forEach(k=>{state.scores[k]=Math.round((raw[k]-6)/24*100);});
+  saveState();
+}
+
+// S2
+function renderMission(){
+  ['target','problem','approach'].forEach(cat=>{
+    document.getElementById('c-'+cat).innerHTML=MISSION_DATA[cat].map(item=>`<button class="chip${state.mission[cat]===item.k?' sel':''}" onclick="pickMission('${cat}','${item.k}',this)">${item.l}</button>`).join('');
+  });
+  updateMissionPreview();
+}
+function pickMission(cat,key,btn){
+  state.mission[cat]=key;
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  btn.classList.add('sel');
+  updateMissionPreview();saveState();
+}
+function updateMissionPreview(){
+  const t=MISSION_DATA.target.find(x=>x.k===state.mission.target);
+  const p=MISSION_DATA.problem.find(x=>x.k===state.mission.problem);
+  const a=MISSION_DATA.approach.find(x=>x.k===state.mission.approach);
+  const el=document.getElementById('mission-preview');
+  if(t||p||a){el.innerHTML='<strong>Misi:</strong> Meningkatkan <strong>'+(p?p.l.toLowerCase():'[pilih problem]')+'</strong> bagi <strong>'+(t?t.l.toLowerCase():'[pilih target]')+'</strong> melalui pendekatan <strong>'+(a?a.l:'[pilih approach]')+'</strong>.';}
+  else{el.textContent='Pilih kombinasi di atas untuk melihat pernyataan misi kamu...';}
+}
+function goCareer(){computeCareerMatches();renderCareerGrid(state.filter||'all');goScreen(3);}
+
+// S3
+function computeCareerMatches(){
+  const sc=state.scores,mis=state.mission;
+  state.topCareers=CAREERS.map(c=>{
+    let rs=0;c.riasec.forEach((d,i)=>{rs+=(sc[d]||0)*(1-i*0.25);});rs=rs/100;
+    let ms=0;
+    if(mis.target&&c.targets.includes(mis.target))ms+=34;
+    if(mis.problem&&c.problems.includes(mis.problem))ms+=33;
+    if(mis.approach&&c.approaches.includes(mis.approach))ms+=33;
+    return{...c,match:Math.min(98,Math.round(rs*0.6+ms*0.4))};
+  }).sort((a,b)=>b.match-a.match);
+  saveState();
+}
+function filterCareer(f,btn){
+  state.filter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderCareerGrid(f);
+}
+function renderCareerGrid(f){
+  const t=MISSION_DATA.target.find(x=>x.k===state.mission.target);
+  const p=MISSION_DATA.problem.find(x=>x.k===state.mission.problem);
+  document.getElementById('career-sub').textContent='Berdasarkan profil RIASEC kamu'+(t?' — membantu '+t.l.toLowerCase():'')+(p?' di bidang '+p.l.toLowerCase():'');
+  const list=f==='all'?state.topCareers:state.topCareers.filter(c=>c.cat===f);
+  document.getElementById('career-grid').innerHTML=list.map(c=>`
+    <div class="career-card${state.selectedIds.includes(c.id)?' sel':''}" onclick="toggleCareer('${c.id}',this)" id="cc-${c.id}">
+      <div class="c-icon">${c.icon}</div>
+      <div class="c-body">
+        <div class="c-name">${c.name}</div>
+        <div class="c-desc">${c.desc}</div>
+        <div class="c-evo">${c.evo}</div>
+        <div class="c-scores">
+          <span class="pill pill-match">★ ${c.match}% cocok</span>
+          <span class="pill pill-grow" title="Growth">↑ ${c.growth}</span>
+          <span class="pill pill-ai" title="AI Risk">⚡ ${c.ai_risk}</span>
+          <span class="pill pill-hum" title="Human Advantage">♥ ${c.human}</span>
+          <span class="pill pill-imp" title="Social Impact">◆ ${c.impact}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  const cnt=state.selectedIds.length;
+  document.getElementById('sel-hint').textContent=cnt>0?cnt+' karier dipilih — lanjutkan untuk lihat hasil lengkap':'Ketuk kartu untuk memilih karier yang menarik untukmu';
+}
+function toggleCareer(id,el){
+  const idx=state.selectedIds.indexOf(id);
+  if(idx>-1){state.selectedIds.splice(idx,1);el.classList.remove('sel');}
+  else{state.selectedIds.push(id);el.classList.add('sel');}
+  const cnt=state.selectedIds.length;
+  document.getElementById('sel-hint').textContent=cnt>0?cnt+' karier dipilih — lanjutkan untuk lihat hasil lengkap':'Ketuk kartu untuk memilih karier yang menarik untukmu';
+  saveState();
+}
+
+// S4
+function getArchetype(){
+  const sc=state.scores;
+  const sorted=Object.entries(sc).sort((a,b)=>b[1]-a[1]);
+  const key=sorted[0][0]+sorted[1][0];
+  return ARCHETYPES[key]||ARCHETYPES['_'];
+}
+function goResults(){
+  const arch=getArchetype();
+  document.getElementById('r-icon').textContent=arch.icon;
+  document.getElementById('r-en').textContent=arch.en;
+  document.getElementById('r-id').textContent=arch.id;
+  document.getElementById('r-desc').textContent=arch.desc;
+  const sc=state.scores;
+  document.getElementById('r-radar').innerHTML=DIMS_ORDER.map(d=>`<div class="rbar"><div class="rbar-lbl">${d}</div><div class="rbar-track"><div class="rbar-fill" style="height:${sc[d]}%;background:${DIM_DATA[d].color}"></div></div><div class="rbar-val">${sc[d]}</div></div>`).join('');
+  const top5=state.topCareers.slice(0,5);
+  document.getElementById('r-careers').innerHTML=top5.map(c=>`<div class="career-card" style="cursor:default"><div class="c-icon">${c.icon}</div><div class="c-body"><div class="c-name">${c.name}</div><div class="c-evo">${c.evo}</div><div class="c-scores"><span class="pill pill-match">★ ${c.match}% cocok</span><span class="pill pill-grow">↑ ${c.growth}</span><span class="pill pill-ai">⚡ ${c.ai_risk}</span><span class="pill pill-hum">♥ ${c.human}</span></div></div></div>`).join('');
+  const skillSet=new Set();top5.slice(0,3).forEach(c=>c.skills.forEach(s=>skillSet.add(s)));
+  document.getElementById('r-skills').innerHTML=[...skillSet].map(s=>`<span class="skill-tag">${s}</span>`).join('');
+  const t=MISSION_DATA.target.find(x=>x.k===state.mission.target);
+  const p=MISSION_DATA.problem.find(x=>x.k===state.mission.problem);
+  const a=MISSION_DATA.approach.find(x=>x.k===state.mission.approach);
+  document.getElementById('r-mission').innerHTML=t&&p&&a
+    ?'🎯 <strong>'+(state.name||'Kamu')+'</strong> ingin meningkatkan <strong>'+p.l.toLowerCase()+'</strong> bagi <strong>'+t.l.toLowerCase()+'</strong> melalui pendekatan <strong>'+a.l+'</strong>.'
+    :'💡 Lengkapi Mission Builder untuk melihat pernyataan misi personalmu. <a href="#" onclick="goScreen(2);return false" style="color:var(--primary)">Isi sekarang →</a>';
+  goScreen(4);
+}
+function copyResults(){
+  const arch=getArchetype(),sc=state.scores;
+  const top3=state.topCareers.slice(0,3).map(c=>c.name).join(', ');
+  const txt='LifeQuest — Hasil Assessment '+state.name+'\nArketipe: '+arch.id+' ('+arch.en+')\nRIASEC: R'+sc.R+' I'+sc.I+' A'+sc.A+' S'+sc.S+' E'+sc.E+' C'+sc.C+'\nTop Karier: '+top3+'\nPlatform: https://lifequest.medinovatech.com/app/';
+  navigator.clipboard.writeText(txt).then(()=>alert('Hasil disalin ke clipboard!')).catch(()=>alert(txt));
+}
+function restartApp(){
+  if(!confirm('Reset semua jawaban dan mulai dari awal?'))return;
+  state={name:'',grade:'',answers:{},mission:{target:'',problem:'',approach:''},scores:{R:0,I:0,A:0,S:0,E:0,C:0},topCareers:[],selectedIds:[],pg:0,apg:0,filter:'all'};
+  saveState();document.getElementById('inp-name').value='';document.getElementById('inp-grade').value='';goScreen(0);
+}
+
+// SCROLL ANIM
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:0.05,rootMargin:'0px 0px -20px 0px'});
+document.querySelectorAll('.fu').forEach(el=>obs.observe(el));
+
+// INIT
+loadState();updateProgress();
+window.addEventListener('load',()=>{
+  document.querySelectorAll('#s0 .fu').forEach((el,i)=>{el.style.transitionDelay=(i*0.07)+'s';requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('vis')));});
+});
+</script>
+</body>
+</html>
